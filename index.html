@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Leon Soo</title>
+    <style>
+        html, body { margin:0; padding:0; overflow:hidden; background:black; height:100%; font-family:sans-serif; }
+        canvas { display:block; position:fixed; top:0; left:0; z-index:0; }
+
+        /* H5专用背景 */
+        .mobile-bg {
+            display: none;
+        }
+
+        /* 页头 */
+        #header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 30;
+            color: #e8e8e8;
+            background: rgba(0, 0, 20, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 212, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        #logo {
+            flex: 0 0 auto;
+            font-weight: bold;
+            font-size: 1.3em;
+            padding-left: 260px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3));
+        }
+        #menu {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+        #menu a {
+            color: #d0d0d0;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 15px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        #menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #00ff9f);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        #menu a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        #menu a:hover::after {
+            width: 80%;
+        }
+
+        /* 桌面端：隐藏汉堡菜单，只显示语言切换 */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 多语言按钮 */
+        #lang-switch {
+            flex: 0 0 auto;
+            font-size: 1.0em;
+            padding: 6px 16px;
+            margin-right: 330px;
+            border-radius: 8px;
+            background: rgba(0, 0, 20, 0.3);
+            white-space: nowrap;
+            color: #d0d0d0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        #lang-switch:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 255, 159, 0.5);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        /* 桌面端默认隐藏汉堡菜单 */
+        #hamburger {
+            display: none;
+        }
+
+        /* 屏幕样式 */
+        .screen {
+            position:absolute;
+            width:100%;
+            height:100%;
+            color:#e8e8e8;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            transition: top 0.8s ease;
+            z-index:1;
+            padding-top:60px;
+            box-sizing:border-box;
+            background:transparent;
+        }
+
+        /* 底部按钮 */
+        #down-btn, #down-btn2 {
+            position: absolute;
+            bottom: 60px;
+            font-size: 0.8em;
+            cursor: pointer;
+            color: #e8e8e8;
+            user-select: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            background: linear-gradient(rgba(0,0,20,0.6), rgba(0,0,20,0.6)) padding-box,
+                        linear-gradient(135deg, #00d4ff, #00ff9f) border-box;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        #down-btn:hover, #down-btn2:hover {
+            background: linear-gradient(rgba(10,30,50,0.8), rgba(10,30,50,0.8)) padding-box,
+                        linear-gradient(135deg, #00ff9f, #ff9f00) border-box;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 30px rgba(0, 255, 159, 0.5);
+            color: #fff;
+        }
+        #up-btn {
+            position: absolute;
+            bottom: 60px;
+            font-size: 0.8em;
+            cursor: pointer;
+            color: #e8e8e8;
+            user-select: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            background: linear-gradient(rgba(0,0,20,0.6), rgba(0,0,20,0.6)) padding-box,
+                        linear-gradient(135deg, #00d4ff, #00ff9f) border-box;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        #up-btn:hover {
+            background: linear-gradient(rgba(10,30,50,0.8), rgba(10,30,50,0.8)) padding-box,
+                        linear-gradient(135deg, #00ff9f, #ff9f00) border-box;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 30px rgba(0, 255, 159, 0.5);
+            color: #fff;
+        }
+
+        /* 右侧圆点导航 */
+        #side-nav {
+            position:fixed;
+            right:20px;
+            top:50%;
+            transform:translateY(-50%);
+            display:flex;
+            flex-direction:column;
+            gap:15px;
+            z-index:10;
+        }
+        .dot {
+            width:14px;
+            height:14px;
+            border-radius:50%;
+            background:rgba(0, 212, 255, 0.3);
+            cursor:pointer;
+            box-shadow:0 0 10px rgba(0, 212, 255, 0.5);
+            transition: all 0.4s;
+            border: 2px solid rgba(0, 212, 255, 0.5);
+        }
+        .dot:hover {
+            background:rgba(0, 255, 159, 0.5);
+            box-shadow:0 0 15px rgba(0, 255, 159, 0.8);
+            border-color: rgba(0, 255, 159, 0.8);
+            transform: scale(1.2);
+        }
+        .dot.active {
+            background: linear-gradient(135deg, #00d4ff, #00ff9f);
+            box-shadow:0 0 20px rgba(0, 212, 255, 0.9), 0 0 40px rgba(0, 255, 159, 0.6);
+            border-color: #fff;
+            transform: scale(1.3);
+        }
+
+        /* 产品网格改为每行 6 个，换行 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 每行6个 */
+            gap: 10px;
+            width: 70%;
+            padding: 20px;
+            justify-items: center;
+            overflow: visible; /* 取消水平滚动 */
+            margin: 0 auto; /* 居中 */
+        }
+        .product-card {
+            width: 186px; /* 固定宽度，文字不换行 */
+            background: rgba(30,30,60,0.8);
+            backdrop-filter: blur(10px);
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 186, 255, 0.2);
+            text-align: center;
+            white-space: nowrap;
+            transition: transform 0.4s, box-shadow 0.4s, border 0.4s;
+            position: relative;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            overflow: hidden;
+        }
+
+        /* 产品卡片光效 */
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            pointer-events: none;
+        }
+
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        /* 产品卡片渐变边框 - 每个卡片不同颜色 */
+        .product-card:nth-child(6n+1) {
+            border-image: linear-gradient(135deg, #00d4ff, #00ff9f) 1;
+        }
+        .product-card:nth-child(6n+2) {
+            border-image: linear-gradient(135deg, #00ff9f, #00d2d3) 1;
+        }
+        .product-card:nth-child(6n+3) {
+            border-image: linear-gradient(135deg, #ff9f00, #feca57) 1;
+        }
+        .product-card:nth-child(6n+4) {
+            border-image: linear-gradient(135deg, #c471ed, #ff6b9d) 1;
+        }
+        .product-card:nth-child(6n+5) {
+            border-image: linear-gradient(135deg, #48dbfb, #5f27cd) 1;
+        }
+        .product-card:nth-child(6n+6) {
+            border-image: linear-gradient(135deg, #1dd1a1, #f7b731) 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow:0 8px 40px rgba(0, 186, 255, 0.6), 0 0 30px rgba(0, 255, 159, 0.4);
+        }
+
+        /* 产品卡片文字颜色 */
+        .product-card {
+            color: #f5f5f5;
+        }
+
+        .product-card span {
+            background: linear-gradient(135deg, #fff 0%, #e8e8e8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .about {
+            padding-right: 300px;
+            padding-left: 300px;
+            text-align: left;
+            line-height: 2;
+            color: #d5d5d5;
+            font-size: 1.05em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        .about a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-bottom: 1px solid transparent;
+            font-weight: 500;
+            padding: 0 2px;
+        }
+        .about a:hover {
+            color: #00ff9f;
+            border-bottom: 1px solid #00ff9f;
+            text-shadow: 0 0 8px rgba(0, 255, 159, 0.5);
+        }
+        /* 标题渐变效果 */
+        .screen h1, .screen h2 {
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 50%, #ff9f00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        /* 呼吸发光动画 - 更柔和 */
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: brightness(1) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4));
+            }
+            50% {
+                filter: brightness(1.2) drop-shadow(0 0 40px rgba(0, 255, 159, 0.6));
+            }
+        }
+
+        /* 桌面版装饰元素 - 浮动光点 */
+        @media screen and (min-width: 769px) {
+            .screen::before {
+                content: '';
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+                border-radius: 50%;
+                top: 20%;
+                left: 10%;
+                animation: float1 8s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            .screen::after {
+                content: '';
+                position: absolute;
+                width: 250px;
+                height: 250px;
+                background: radial-gradient(circle, rgba(0, 255, 159, 0.12) 0%, transparent 70%);
+                border-radius: 50%;
+                bottom: 15%;
+                right: 8%;
+                animation: float2 10s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            #screen2::before {
+                background: radial-gradient(circle, rgba(255, 159, 0, 0.15) 0%, transparent 70%);
+                animation-delay: 1s;
+            }
+
+            #screen2::after {
+                background: radial-gradient(circle, rgba(196, 113, 237, 0.12) 0%, transparent 70%);
+                animation-delay: 2s;
+            }
+
+            @keyframes float1 {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 0.6;
+                }
+                33% {
+                    transform: translate(50px, -30px) scale(1.1);
+                    opacity: 0.8;
+                }
+                66% {
+                    transform: translate(-30px, 40px) scale(0.9);
+                    opacity: 0.5;
+                }
+            }
+
+            @keyframes float2 {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 0.5;
+                }
+                33% {
+                    transform: translate(-40px, 30px) scale(1.15);
+                    opacity: 0.7;
+                }
+                66% {
+                    transform: translate(30px, -25px) scale(0.85);
+                    opacity: 0.6;
+                }
+            }
+        }
+
+        /* 汉堡菜单图标样式 */
+        #hamburger {
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 30;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+        #hamburger:hover {
+            opacity: 0.7;
+        }
+        #hamburger span {
+            width: 25px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #00ff9f);
+            border-radius: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+        #hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        #hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        #hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* 移动端侧边栏菜单 */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            max-width: 300px;
+            height: 100%;
+            background: rgba(15, 14, 23, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 25;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+            border-left: 1px solid rgba(0, 212, 255, 0.2);
+            display: none;
+            box-sizing: border-box;
+        }
+        #mobile-menu.active {
+            right: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .mobile-menu-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 80px;
+        }
+        #mobile-menu a {
+            display: block;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 25px 35px;
+            font-size: 1.3em;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        #mobile-menu a:hover {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), transparent);
+            padding-left: 45px;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        /* 侧边栏语言切换 */
+        #mobile-lang-switch {
+            padding: 25px 35px;
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            background: rgba(0, 212, 255, 0.05);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #mobile-lang-switch:hover {
+            background: rgba(30, 30, 50, 0.7);
+        }
+        #mobile-lang-switch:active {
+            background: rgba(30, 30, 50, 0.9);
+        }
+
+        /* 遮罩层 */
+        #menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #menu-overlay.active {
+            opacity: 1;
+        }
+
+        /* 移动端适配 */
+        @media screen and (max-width: 768px) {
+            /* 移除overflow限制，允许滚动 */
+            html, body {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: auto;
+            }
+
+            /* 隐藏星空canvas */
+            canvas {
+                display: none !important;
+            }
+
+            /* 显示移动端科技感背景 */
+            .mobile-bg {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+                background: linear-gradient(135deg,
+                    #0f0e17 0%,
+                    #1a1a2e 35%,
+                    #16213e 70%,
+                    #0a3a3a 100%);
+            }
+
+            /* 网格装饰 */
+            .mobile-bg::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image:
+                    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+                background-size: 50px 50px;
+                opacity: 0.8;
+            }
+
+            /* 霓虹发光装饰 */
+            .mobile-bg::after {
+                content: '';
+                position: absolute;
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, rgba(0, 255, 159, 0.1) 50%, transparent 70%);
+                top: 10%;
+                right: -100px;
+                animation: neonPulse 10s ease-in-out infinite;
+            }
+
+            @keyframes neonPulse {
+                0%, 100% {
+                    opacity: 0.5;
+                    transform: scale(1);
+                    background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, rgba(0, 255, 159, 0.1) 50%, transparent 70%);
+                }
+                33% {
+                    opacity: 0.8;
+                    transform: scale(1.2);
+                    background: radial-gradient(circle, rgba(0, 149, 255, 0.2) 0%, rgba(0, 212, 255, 0.15) 50%, transparent 70%);
+                }
+                66% {
+                    opacity: 0.8;
+                    transform: scale(1.15);
+                    background: radial-gradient(circle, rgba(0, 255, 213, 0.2) 0%, rgba(255, 159, 0, 0.15) 50%, transparent 70%);
+                }
+            }
+
+            /* 扫描线动画效果 */
+            .mobile-bg {
+                overflow: hidden;
+            }
+
+            .mobile-bg::before {
+                animation: gridFloat 20s linear infinite;
+            }
+
+            @keyframes gridFloat {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(50px); }
+            }
+
+            /* 数字粒子效果 - 使用伪元素 */
+            body::after {
+                content: '';
+                position: fixed;
+                top: -100%;
+                left: 0;
+                width: 100%;
+                height: 300%;
+                background-image:
+                    radial-gradient(2px 2px at 20% 30%, rgba(0, 212, 255, 0.3), transparent),
+                    radial-gradient(2px 2px at 60% 70%, rgba(0, 255, 159, 0.3), transparent),
+                    radial-gradient(1px 1px at 50% 50%, rgba(0, 212, 255, 0.2), transparent),
+                    radial-gradient(1px 1px at 80% 10%, rgba(255, 159, 0, 0.2), transparent);
+                background-size: 200px 200px, 180px 180px, 150px 150px, 220px 220px;
+                background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+                animation: particleFloat 40s linear infinite;
+                pointer-events: none;
+                z-index: 1;
+                opacity: 0;
+            }
+
+            @media screen and (max-width: 768px) {
+                body::after {
+                    opacity: 0.6;
+                }
+            }
+
+            @keyframes particleFloat {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(50%); }
+            }
+
+            /* 流星效果 - 仅移动端，参考桌面版实现 */
+            .meteor {
+                position: fixed;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 50;
+                display: none;
+                --meteor-color-start: rgba(0, 212, 255, 0);
+                --meteor-color-end: rgba(0, 212, 255, 0.8);
+                --meteor-glow: rgba(0, 212, 255, 0.6);
+                --meteor-tail-length: 80px;
+                --meteor-head-size: 4px;
+                --meteor-glow-size: 8px;
+            }
+
+            /* 流星尾巴 - 从透明渐变到颜色 */
+            .meteor::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: 100%;
+                width: var(--meteor-tail-length);
+                height: 2px;
+                transform: translateY(-50%);
+                background: linear-gradient(90deg, var(--meteor-color-start) 0%, var(--meteor-color-end) 100%);
+            }
+
+            /* 流星头部光晕 */
+            .meteor::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: var(--meteor-glow-size);
+                height: var(--meteor-glow-size);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                filter: blur(3px);
+                background: var(--meteor-glow);
+            }
+
+            @media screen and (max-width: 768px) {
+                .meteor {
+                    display: block;
+                }
+
+                /* 流星样式 - 通过JS动态控制 */
+                .meteor.active {
+                    display: block;
+                }
+            }
+
+            @media screen and (min-width: 769px) {
+                .meteor {
+                    display: none;
+                }
+            }
+
+            /* 通用流星动画 - 沿着头尾方向直线移动 */
+            @keyframes meteorFly {
+                0% {
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                70% {
+                    opacity: 0.8;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            /* 页头移动端样式 */
+            #header {
+                height: 60px;
+                padding: 0 20px;
+                justify-content: center;
+                position: fixed;
+                background: rgba(15, 14, 23, 0.85);
+                backdrop-filter: blur(20px);
+                z-index: 100;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            /* 页头底部发光线条 */
+            #header::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 212, 255, 0.8),
+                    rgba(0, 255, 159, 0.8),
+                    transparent
+                );
+                animation: headerGlow 3s ease-in-out infinite;
+            }
+
+            @keyframes headerGlow {
+                0% {
+                    opacity: 0.3;
+                    transform: translateX(-100%);
+                    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), rgba(0, 149, 255, 0.6), transparent);
+                }
+                50% {
+                    opacity: 1;
+                    transform: translateX(100%);
+                    background: linear-gradient(90deg, transparent, rgba(0, 255, 159, 0.8), rgba(0, 255, 213, 0.8), transparent);
+                }
+                100% {
+                    opacity: 0.3;
+                    transform: translateX(200%);
+                    background: linear-gradient(90deg, transparent, rgba(0, 255, 213, 0.8), rgba(255, 159, 0, 0.6), transparent);
+                }
+            }
+            #logo {
+                font-size: 1.4em;
+                padding-left: 0;
+                flex-shrink: 0;
+                text-align: center;
+                background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                letter-spacing: 2px;
+                transform: translateX(-30px);
+                animation: logoBreath 4s ease-in-out infinite;
+            }
+
+            @keyframes logoBreath {
+                0%, 100% {
+                    filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5));
+                }
+                25% {
+                    filter: drop-shadow(0 0 15px rgba(0, 149, 255, 0.7))
+                            drop-shadow(0 0 25px rgba(0, 212, 255, 0.4));
+                }
+                50% {
+                    filter: drop-shadow(0 0 20px rgba(0, 255, 159, 0.8))
+                            drop-shadow(0 0 30px rgba(0, 255, 213, 0.5));
+                }
+                75% {
+                    filter: drop-shadow(0 0 15px rgba(255, 159, 0, 0.7))
+                            drop-shadow(0 0 25px rgba(0, 255, 159, 0.4));
+                }
+            }
+
+            /* 汉堡菜单固定在右边 */
+            .header-right {
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            /* 隐藏横向菜单 */
+            #menu {
+                display: none !important;
+            }
+
+            /* 显示汉堡菜单图标 */
+            #hamburger {
+                display: flex;
+            }
+
+            /* 移动端显示侧边栏和遮罩 */
+            #mobile-menu {
+                display: none;
+            }
+            #mobile-menu.active {
+                display: flex !important;
+            }
+            #menu-overlay {
+                display: block;
+            }
+
+            /* 移动端隐藏页头的语言切换 */
+            #lang-switch {
+                display: none !important;
+            }
+
+            /* 移动端单页布局 */
+            .screen {
+                position: relative !important;
+                top: 0 !important;
+                width: 100%;
+                height: auto !important;
+                min-height: auto !important;
+                padding: 80px 20px 30px 20px;
+                display: block !important;
+                z-index: 1;
+                background: transparent;
+                justify-content: flex-start;
+            }
+
+            /* 区域容器 */
+            .mobile-section {
+                background: rgba(26, 26, 46, 0.6);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(0, 212, 255, 0.2);
+                border-radius: 20px;
+                padding: 30px 20px;
+                margin-bottom: 25px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                            0 0 40px rgba(0, 212, 255, 0.05);
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* 不同卡片的边框颜色 */
+            #screen1 .mobile-section {
+                border: 1px solid rgba(0, 212, 255, 0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                            0 0 40px rgba(0, 212, 255, 0.1),
+                            inset 0 0 30px rgba(0, 212, 255, 0.02);
+            }
+
+            #screen2 .mobile-section {
+                border: 1px solid rgba(0, 255, 159, 0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                            0 0 40px rgba(0, 255, 159, 0.1),
+                            inset 0 0 30px rgba(0, 255, 159, 0.02);
+            }
+
+            #screen3 .mobile-section {
+                border: 1px solid rgba(255, 159, 0, 0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                            0 0 40px rgba(255, 159, 0, 0.1),
+                            inset 0 0 30px rgba(255, 159, 0, 0.02);
+            }
+
+            /* 卡片扫光效果 - 多彩变化 */
+            .mobile-section::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 212, 255, 0.1) 45%,
+                    rgba(0, 212, 255, 0.3) 50%,
+                    rgba(0, 212, 255, 0.1) 55%,
+                    transparent
+                );
+                animation: cardScan 8s linear infinite;
+                pointer-events: none;
+            }
+
+            /* 为不同卡片设置不同颜色的扫光效果 */
+            #screen1 .mobile-section::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 212, 255, 0.15) 45%,
+                    rgba(0, 212, 255, 0.35) 50%,
+                    rgba(0, 149, 255, 0.2) 55%,
+                    transparent
+                );
+                animation: cardScan 9s linear infinite;
+            }
+
+            #screen2 .mobile-section::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 255, 159, 0.15) 45%,
+                    rgba(0, 255, 159, 0.35) 50%,
+                    rgba(0, 255, 213, 0.2) 55%,
+                    transparent
+                );
+                animation: cardScan 10s linear infinite;
+            }
+
+            #screen3 .mobile-section::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 159, 0, 0.15) 45%,
+                    rgba(255, 159, 0, 0.35) 50%,
+                    rgba(255, 183, 0, 0.2) 55%,
+                    transparent
+                );
+                animation: cardScan 11s linear infinite;
+            }
+
+            @keyframes cardScan {
+                0% { transform: translateX(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) rotate(45deg); }
+            }
+
+            /* 卡片初始动画 */
+            .mobile-section {
+                animation: sectionFadeIn 1s ease-out;
+            }
+
+            @keyframes sectionFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .screen h1 {
+                font-size: 2em;
+                margin: 0 0 20px 0;
+                text-align: center;
+                background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                letter-spacing: 1px;
+                position: relative;
+                animation: titleGlow 3s ease-in-out infinite;
+            }
+
+            .screen h2 {
+                font-size: 1.6em;
+                margin: 0 0 20px 0;
+                text-align: center;
+                background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                position: relative;
+                animation: titleGlow 3s ease-in-out infinite 0.5s;
+            }
+
+            @keyframes titleGlow {
+                0%, 100% {
+                    filter: brightness(1) drop-shadow(0 0 5px rgba(0, 212, 255, 0.4));
+                }
+                33% {
+                    filter: brightness(1.2) drop-shadow(0 0 12px rgba(0, 255, 159, 0.6));
+                }
+                66% {
+                    filter: brightness(1.3) drop-shadow(0 0 15px rgba(255, 159, 0, 0.6));
+                }
+            }
+
+            .screen p {
+                font-size: 1.05em;
+                line-height: 2;
+                margin: 0;
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            /* about区域 */
+            .about {
+                padding: 0 !important;
+                line-height: 2;
+                text-align: left;
+                font-size: 1.05em !important;
+                margin: 0;
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            .about a {
+                color: #00d4ff;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .about a:hover {
+                color: #00ff9f;
+                text-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+            }
+
+            /* 产品展示 - 网格瀑布流（Pinterest风格） */
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px 15px;
+                width: 100%;
+                padding: 0;
+                margin-top: 25px;
+            }
+
+            .product-card {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 12px 8px;
+                min-height: auto;
+                background: transparent;
+                border-radius: 0;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                overflow: visible;
+                border: none;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* 左上角装饰元素 - 移动端隐藏 */
+            .product-card::before {
+                display: none;
+            }
+
+            /* 发光边框 - 用于动效 */
+            .product-card::after {
+                content: '';
+                position: absolute;
+                inset: -2px;
+                border-radius: 12px;
+                background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                pointer-events: none;
+                z-index: -1;
+                animation: borderRotate 3s linear infinite;
+                animation-play-state: paused;
+            }
+
+            @keyframes borderRotate {
+                0% {
+                    transform: rotate(0deg);
+                    background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.4), rgba(0, 149, 255, 0.2), transparent);
+                }
+                33% {
+                    background: linear-gradient(45deg, transparent, rgba(0, 255, 159, 0.4), rgba(0, 255, 213, 0.2), transparent);
+                }
+                66% {
+                    background: linear-gradient(45deg, transparent, rgba(255, 159, 0, 0.4), rgba(255, 183, 0, 0.2), transparent);
+                }
+                100% {
+                    transform: rotate(360deg);
+                    background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.4), rgba(0, 149, 255, 0.2), transparent);
+                }
+            }
+
+            .product-card span {
+                position: relative;
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 0.95em;
+                font-weight: 600;
+                text-align: center;
+                line-height: 1.6;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                max-width: 100%;
+                transition: all 0.35s ease;
+                z-index: 1;
+            }
+
+            /* 产品卡片高端渐变色系 - 青蓝到青绿到琥珀的协调过渡 */
+            .product-card:nth-child(1) span {
+                background: linear-gradient(135deg, #00d4ff, #0095ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(2) span {
+                background: linear-gradient(135deg, #0095ff, #0080ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(3) span {
+                background: linear-gradient(135deg, #0080ff, #00aaff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(4) span {
+                background: linear-gradient(135deg, #00aaff, #00d4ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(5) span {
+                background: linear-gradient(135deg, #00d4ff, #00ffd5);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6) span {
+                background: linear-gradient(135deg, #00ffd5, #00ffaa);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(7) span {
+                background: linear-gradient(135deg, #00ffaa, #00ff9f);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(8) span {
+                background: linear-gradient(135deg, #00ff9f, #4dff8f);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(9) span {
+                background: linear-gradient(135deg, #00d4ff, #0095ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(10) span {
+                background: linear-gradient(135deg, #0095ff, #00d4ff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(11) span {
+                background: linear-gradient(135deg, #00ffd5, #00ff9f);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(12) span {
+                background: linear-gradient(135deg, #00ff9f, #4dff8f);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(13) span {
+                background: linear-gradient(135deg, #4dff8f, #99ff66);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(14) span {
+                background: linear-gradient(135deg, #99ff66, #ccff33);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(15) span {
+                background: linear-gradient(135deg, #ccff33, #ff9f00);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(16) span {
+                background: linear-gradient(135deg, #ff9f00, #ffb700);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* Hover效果 - 高端霓虹发光 */
+            .product-card:hover {
+                background: rgba(0, 212, 255, 0.05);
+                transform: translateY(-2px) scale(1.02);
+                border-radius: 12px;
+            }
+
+            .product-card:hover::after {
+                opacity: 1;
+                animation-play-state: running;
+            }
+
+            .product-card:hover span {
+                transform: scale(1.05);
+                filter: brightness(1.3);
+                text-shadow: 0 0 15px currentColor;
+            }
+
+
+            /* 渐现动画 - 科技感出场 */
+            @keyframes fadeInScale {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px) scale(0.9);
+                    filter: blur(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            .product-card {
+                animation: fadeInScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+            }
+
+            .product-card:nth-child(1) { animation-delay: 0.05s; }
+            .product-card:nth-child(2) { animation-delay: 0.1s; }
+            .product-card:nth-child(3) { animation-delay: 0.08s; }
+            .product-card:nth-child(4) { animation-delay: 0.15s; }
+            .product-card:nth-child(5) { animation-delay: 0.12s; }
+            .product-card:nth-child(6) { animation-delay: 0.18s; }
+            .product-card:nth-child(7) { animation-delay: 0.2s; }
+            .product-card:nth-child(8) { animation-delay: 0.16s; }
+            .product-card:nth-child(9) { animation-delay: 0.22s; }
+            .product-card:nth-child(10) { animation-delay: 0.25s; }
+            .product-card:nth-child(11) { animation-delay: 0.28s; }
+            .product-card:nth-child(12) { animation-delay: 0.3s; }
+            .product-card:nth-child(13) { animation-delay: 0.33s; }
+            .product-card:nth-child(14) { animation-delay: 0.35s; }
+            .product-card:nth-child(15) { animation-delay: 0.38s; }
+            .product-card:nth-child(16) { animation-delay: 0.4s; }
+
+            /* 隐藏桌面端元素 */
+            #down-btn, #down-btn2, #up-btn {
+                display: none !important;
+            }
+
+            #side-nav {
+                display: none !important;
+            }
+
+            /* 页尾 */
+            #footer {
+                position: relative;
+                font-size: 0.85em;
+                padding: 20px 10px;
+                margin-top: 30px;
+                z-index: 1;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media screen and (max-width: 480px) {
+            .screen h1 {
+                font-size: 1.6em;
+            }
+            .screen h2 {
+                font-size: 1.4em;
+            }
+            .screen p {
+                font-size: 0.95em;
+            }
+
+            /* 超小屏幕优化 */
+            .product-grid {
+                gap: 10px 12px;
+            }
+
+            .product-card {
+                padding: 10px 6px;
+            }
+
+            .product-card span {
+                font-size: 0.82em;
+                line-height: 1.5;
+            }
+
+            .mobile-section {
+                padding: 25px 15px;
+            }
+        }
+
+        /* 页尾 */
+        #footer {
+            position:fixed;
+            bottom:0;
+            width:100%;
+            text-align:center;
+            padding:10px 0;
+            font-size:0.9em;
+            background:rgba(0,0,20,0.6);
+            color:#5ec9ff;
+            box-shadow:0 -2px 10px rgba(0,0,0,0.5);
+            z-index:10;
+        }
+    </style>
+</head>
+<body>
+<canvas id="starCanvas"></canvas>
+
+<!-- 移动端科技感背景 -->
+<div class="mobile-bg"></div>
+
+<!-- 流星效果 - 仅移动端 -->
+<div class="meteor"></div>
+<div class="meteor"></div>
+<div class="meteor"></div>
+<div class="meteor"></div>
+<div class="meteor"></div>
+<div class="meteor"></div>
+
+<!-- 页头 -->
+<div id="header">
+    <div id="logo">Leon</div>
+    <div id="menu">
+        <a id="menu-about">
+            <span class="zh">简介</span>
+            <span class="en" style="display:none;">Introduction</span>
+        </a>
+        <a id="menu-products">
+            <span class="zh">项目</span>
+            <span class="en" style="display:none;">Products</span>
+        </a>
+        <a id="menu-contact">
+            <span class="zh">关于</span>
+            <span class="en" style="display:none;">About</span>
+        </a>
+        <a href="https://www.opencode.cloud" target="_blank">
+            <span class="zh">开源库</span>
+            <span class="en" style="display:none;">OpenCode</span>
+        </a>
+    </div>
+    <div class="header-right">
+        <div id="lang-switch">🇨🇳 | 🇺🇸</div>
+        <div id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<!-- 移动端菜单遮罩 -->
+<div id="menu-overlay"></div>
+
+<!-- 移动端侧边栏菜单 -->
+<div id="mobile-menu">
+    <div class="mobile-menu-content">
+        <a class="mobile-menu-item">
+            <span class="zh">简介</span>
+            <span class="en" style="display:none;">Introduction</span>
+        </a>
+        <a class="mobile-menu-item">
+            <span class="zh">项目</span>
+            <span class="en" style="display:none;">Products</span>
+        </a>
+        <a class="mobile-menu-item">
+            <span class="zh">关于</span>
+            <span class="en" style="display:none;">About</span>
+        </a>
+        <a href="https://www.opencode.cloud" target="_blank">
+            <span class="zh">开源库</span>
+            <span class="en" style="display:none;">OpenCode</span>
+        </a>
+    </div>
+    <div id="mobile-lang-switch">
+        <span class="zh">🇨🇳 | 🇺🇸</span>
+        <span class="en" style="display:none;">🇺🇸 | 🇨🇳</span>
+    </div>
+</div>
+
+<!-- 屏幕 -->
+<div id="screen1" class="screen" style="top:0%;">
+    <div class="mobile-section">
+        <h1 class="zh">简介</h1>
+        <h1 class="en" style="display:none;">Introduction</h1>
+        <p class="zh about">我是 Leon Soo，一名"数字代码生产者"，专注于将创意通过代码转化为可落地的数字产品。<br/><br/>常用 Java 与 Vue 进行全栈开发，能独立构建项目，也能高效协同团队推进开发，擅长云原生项目部署，并具备原生应用开发能力。热爱探索新技术与数码产品，喜欢通过电影体验不同的世界，也享受与爱的人共度的时光。<br/><br/>我的原则是专注，无论是生活还是项目，都应追求卓越与创新。</p>
+        <p class="en about" style="display:none;">
+            I'm Leon Soo, a digital code creator dedicated to transforming ideas into tangible digital products through code.<br/><br/>
+            I primarily work with Java and Vue for full-stack development, capable of building projects independently as well as collaborating efficiently within teams. I specialize in cloud-native deployment and also have experience in native app development. I'm passionate about exploring new technologies and digital tools, enjoy discovering different worlds through films, and value the moments spent with loved ones.<br/><br/>
+            My guiding principle is focus — whether in life or in projects, I believe in pursuing excellence and innovation in everything I do.
+        </p>
+    </div>
+    <div id="down-btn">▼ More</div>
+</div>
+
+<div id="screen2" class="screen" style="top:100%;">
+    <div class="mobile-section">
+        <h2 class="zh">主要项目</h2>
+        <h2 class="en" style="display:none;">Main Projects</h2>
+        <p class="zh about">OpenCode（opencode.cloud）是我独立维护的一个开源项目，它的前身是 Facecto.com。由于工作繁忙，早期项目一度停止维护，但我始终坚信：开源的意义不止于代码共享，更在于知识的流动与思想的交流。<br/><br/>
+        OpenCode 的愿景是让更多开发者能够以更开放的方式去构建、去学习、去创造。技术的价值，在于连接与启发，而非界限与隔阂。我们所做的一切，都是希望通过开源的力量，让创造力回归最纯粹的本质 —— 自由、协作与创新。<br/><br/>
+        目前我主要维护的是 OpenCode Util 系列 —— 一组面向开发者的轻量级开源工具库，旨在提升代码的可复用性与工程效率。它不仅是我在日常开发中的积累与沉淀，也是希望为社区提供一些可借鉴、可扩展的基础组件。<br/><br/>
+        未来，OpenCode 将继续围绕"简洁、稳定、开放"的理念，推出更多实用的工具与框架，让开发的过程更纯粹、更有乐趣。</p>
+        <p class="en about" style="display:none;">OpenCode (opencode.cloud) is an open-source project I maintain independently. It originated from Facecto.com, an earlier project that was discontinued due to a busy work schedule. Yet, I've always believed that the essence of open source lies not only in sharing code, but in enabling the flow of knowledge and the exchange of ideas.<br/><br/>
+        The vision of OpenCode is to empower developers to build, learn, and create in a more open way. The true value of technology lies in connection and inspiration, not in boundaries or separation. Everything we do is driven by one belief: that open source brings creativity back to its purest form — freedom, collaboration, and innovation.<br/><br/>
+        Currently, I'm maintaining the OpenCode Util series — a collection of lightweight open-source utility libraries designed to enhance code reusability and engineering efficiency. It represents both my personal development experience and a contribution to the community, offering practical and extensible components for developers.<br/><br/>
+        In the future, OpenCode will continue to embrace the principles of simplicity, stability, and openness, delivering more useful tools and frameworks that make development cleaner, more enjoyable, and truly creative.</p>
+
+        <div class="product-grid">
+            <div class="product-card"><span>opencode-util-core</span></div>
+            <div class="product-card"><span>opencode-util-collections</span></div>
+            <div class="product-card"><span>opencode-util-crypto</span></div>
+            <div class="product-card"><span>opencode-util-date</span></div>
+            <div class="product-card"><span>opencode-util-geo</span></div>
+            <div class="product-card"><span>opencode-util-image</span></div>
+            <div class="product-card"><span>opencode-util-io</span></div>
+            <div class="product-card"><span>opencode-util-json</span></div>
+            <div class="product-card"><span>opencode-util-net</span></div>
+            <div class="product-card"><span>opencode-util-validation</span></div>
+            <div class="product-card"><span>opencode-util-xml</span></div>
+            <div class="product-card"><span>opencode-util-yml</span></div>
+            <div class="product-card"><span>opencode-util-captcha</span></div>
+            <div class="product-card"><span>opencode-util-db</span></div>
+            <div class="product-card"><span>opencode-util-template</span></div>
+            <div class="product-card"><span>opencode-util-email</span></div>
+        </div>
+    </div>
+    <div id="down-btn2">▼ More</div>
+</div>
+
+<div id="screen3" class="screen" style="top:200%;">
+    <div class="mobile-section">
+        <h2 class="zh">关于</h2>
+        <h2 class="en" style="display:none;">About</h2>
+        <p class="zh about">我的英文全名是 Jon Leon Soo（苏姓）。在早期开发开源组件和维护 Facecto 网站时，我常使用简称 Jon。不过，由于这个名字太常见了，现在我更喜欢别人叫我 Leon。当然，如果你愿意，也可以叫我 Jon。<br/><br/>
+        希望我开源的代码能对你有所帮助。欢迎访问我的 GitHub：<a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a><br/><br/>
+        我的邮箱：<a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a><br/>
+        网站：<a href="https://www.leonsoo.com" target="_blank" style="color:#5ec9ff;">www.leonsoo.com</a></p>
+        <p class="en about" style="display:none;">My full English name is Jon Leon Soo. During the early days of developing open-source components and maintaining the Facecto website, I often went by Jon. However, since that name is quite common, I now prefer to be called Leon. Of course, you can still call me Jon.<br/><br/>
+        I hope my open-source projects can be helpful to you. Feel free to visit my GitHub: <a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a><br/><br/>
+        Email: <a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a><br/>
+        Website: <a href="https://www.leonsoo.com" target="_blank" style="color:#5ec9ff;">www.leonsoo.com</a></p>
+    </div>
+    <div id="up-btn">▲ Top</div>
+</div>
+
+<!-- 页尾 -->
+<div id="footer">
+    <span class="zh">@ 2025 Leon Soo ，Email: leon@leonsoo.com</span>
+    <span class="en" style="display:none;">@ 2025 Leon Soo, Email: leon@leonsoo.com</span>
+</div>
+
+
+<div id="side-nav">
+    <div class="dot active" data-target="screen1"></div>
+    <div class="dot" data-target="screen2"></div>
+    <div class="dot" data-target="screen3"></div>
+</div>
+
+<script>
+    // 移动端菜单控制
+    const hamburger = document.getElementById("hamburger");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const menuOverlay = document.getElementById("menu-overlay");
+
+    function toggleMobileMenu() {
+        hamburger.classList.toggle("active");
+        mobileMenu.classList.toggle("active");
+        menuOverlay.classList.toggle("active");
+    }
+
+    function closeMobileMenu() {
+        hamburger.classList.remove("active");
+        mobileMenu.classList.remove("active");
+        menuOverlay.classList.remove("active");
+    }
+
+    hamburger.onclick = toggleMobileMenu;
+    menuOverlay.onclick = closeMobileMenu;
+
+    // 屏幕切换
+    function showScreen(targetId){
+        const screens=["screen1","screen2","screen3"];
+        const targetIndex = screens.indexOf(targetId);
+        screens.forEach((id,i)=>{
+            document.getElementById(id).style.top = `${(i-targetIndex)*100}%`;
+        });
+        document.querySelectorAll(".dot").forEach(d=>d.classList.toggle("active", d.dataset.target===targetId));
+        document.getElementById("up-btn").style.display = targetId==="screen1" ? "none":"block";
+        closeMobileMenu(); // 切换屏幕后关闭移动端菜单
+    }
+
+    // 按钮
+    document.getElementById("down-btn").onclick = ()=>showScreen("screen2");
+    document.getElementById("down-btn2").onclick = ()=>showScreen("screen3");
+    document.querySelectorAll(".dot").forEach(dot=>dot.onclick = ()=>showScreen(dot.dataset.target));
+
+    // 桌面端菜单
+    document.getElementById("menu-about").onclick = ()=>showScreen("screen1");
+    document.getElementById("menu-products").onclick = ()=>showScreen("screen2");
+    document.getElementById("menu-contact").onclick = ()=>showScreen("screen3");
+
+    // 移动端菜单（通过索引绑定）
+    const mobileMenuItems = document.querySelectorAll(".mobile-menu-item");
+    const screens = ["screen1", "screen2", "screen3"];
+
+    // 判断是否为移动端
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    mobileMenuItems.forEach((item, index) => {
+        item.onclick = () => {
+            if (isMobile()) {
+                // 移动端：滚动到对应区域
+                const targetScreen = document.getElementById(screens[index]);
+                targetScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                closeMobileMenu();
+            } else {
+                // 桌面端：切换screen
+                showScreen(screens[index]);
+            }
+        };
+    });
+
+    document.getElementById("up-btn").onclick = () => showScreen("screen1");
+
+
+    // 语言切换函数
+    function switchLanguage() {
+        const zh = document.querySelectorAll(".zh");
+        const en = document.querySelectorAll(".en");
+        const menu = document.querySelectorAll("#menu a");
+        const showCN = zh[0].style.display === "none";
+
+        // 切换所有带zh/en类的元素
+        zh.forEach(el=>el.style.display = showCN ? "block" : "none");
+        en.forEach(el=>el.style.display = showCN ? "none" : "block");
+
+        // 桌面端菜单文本切换
+        const menuTexts = [
+            ["关于","项目","更多","OpenCode"],
+            ["About","Products","Contact","OpenCode"]
+        ];
+        menu.forEach((a,i)=>{
+            a.textContent = showCN ? menuTexts[0][i] : menuTexts[1][i];
+        });
+    }
+
+    // 桌面端语言切换（页头）
+    document.getElementById("lang-switch").onclick = switchLanguage;
+
+    // 移动端语言切换（侧边栏）
+    document.getElementById("mobile-lang-switch").onclick = switchLanguage;
+
+    // 触摸滑动功能（仅桌面端使用）
+    if (!isMobile()) {
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let currentScreen = 0;
+
+        document.addEventListener("touchstart", (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener("touchend", (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchEndX = e.changedTouches[0].clientX;
+            const deltaY = touchStartY - touchEndY;
+            const deltaX = Math.abs(touchStartX - touchEndX);
+
+            if (Math.abs(deltaY) > 50 && deltaX < 30) {
+                const screens = ["screen1", "screen2", "screen3"];
+
+                if (deltaY > 0) {
+                    if (currentScreen < 2) {
+                        currentScreen++;
+                        showScreen(screens[currentScreen]);
+                    }
+                } else {
+                    if (currentScreen > 0) {
+                        currentScreen--;
+                        showScreen(screens[currentScreen]);
+                    }
+                }
+            }
+        });
+
+        const originalShowScreen = showScreen;
+        showScreen = function(targetId) {
+            originalShowScreen(targetId);
+            const screens = ["screen1", "screen2", "screen3"];
+            currentScreen = screens.indexOf(targetId);
+        };
+    }
+
+</script>
+
+<!-- 星空动画 -->
+<script>
+    const canvas = document.getElementById("starCanvas");
+    const ctx = canvas.getContext("2d");
+    let stars=[], meteors=[], galaxyLayers=[], constellations=[];
+
+    // 星空旋转参数 - 可配置
+    const ROTATION_PERIOD_MINUTES = 60; // 旋转周期（分钟），可改为30、45等
+    const SKY_VIEW_SCALE = 2.5; // 视野缩放：值越小视野越宽广，2.5可以看到更大范围的星空
+    let skyRotation = 0;
+    const rotationSpeed = (Math.PI * 2) / (ROTATION_PERIOD_MINUTES * 60 * 1000); // 弧度/毫秒
+
+    // 北极星位置（屏幕中心偏上）
+    let polarisX, polarisY;
+
+    function resize(){
+        canvas.width=window.innerWidth;
+        canvas.height=window.innerHeight;
+
+        // 观察位置：福州（北纬26度）
+        // 北极星高度角 = 观察地纬度 ≈ 26度
+        // 屏幕底部为地平线(0度)，顶部为天顶附近
+        // 26度约为从地平线向上29%的位置
+        polarisX = canvas.width / 2;
+        polarisY = canvas.height * 0.71; // 从顶部算71%，即从底部29%
+
+        // 重新生成星空
+        initRealStars();
+        initConstellations();
+    }
+
+    window.addEventListener("resize",resize);
+
+    // 福州观测位置参数
+    const LATITUDE = 26; // 北纬26度
+    const LOCAL_SIDEREAL_TIME = 0; // 本地恒星时（会随时间变化，这里简化为0）
+
+    // 真实星座数据 - 使用赤经(RA)赤纬(Dec)坐标系统
+    // 赤经单位：小时(0-24)，赤纬单位：度(-90到+90)
+    const constellationData = [
+        // 北斗七星（大熊座的一部分）- 拱极星座，福州全年可见
+        {
+            name: '北斗七星',
+            stars: [
+                {ra: 11.06, dec: 61.75, brightness: 1.8},  // 天枢 α UMa
+                {ra: 11.03, dec: 56.38, brightness: 2.4},  // 天璇 β UMa
+                {ra: 11.90, dec: 53.69, brightness: 2.4},  // 天玑 γ UMa
+                {ra: 12.26, dec: 57.03, brightness: 3.3},  // 天权 δ UMa
+                {ra: 12.90, dec: 55.96, brightness: 1.8},  // 玉衡 ε UMa
+                {ra: 13.40, dec: 54.93, brightness: 2.3},  // 开阳 ζ UMa
+                {ra: 13.79, dec: 49.31, brightness: 1.9}   // 摇光 η UMa
+            ]
+        },
+        // 猎户座 - 冬季星座，福州冬季可见
+        {
+            name: '猎户座',
+            stars: [
+                {ra: 5.92, dec: 7.41, brightness: 0.5},    // 参宿四 Betelgeuse
+                {ra: 5.53, dec: -0.30, brightness: 0.1},   // 参宿七 Rigel
+                {ra: 5.60, dec: -1.20, brightness: 1.7},   // 参宿一 Alnitak
+                {ra: 5.60, dec: -1.94, brightness: 1.7},   // 参宿二 Alnilam
+                {ra: 5.68, dec: -1.94, brightness: 1.8},   // 参宿三 Mintaka
+                {ra: 5.42, dec: -0.52, brightness: 2.2},   // 参宿六 Saiph
+                {ra: 5.41, dec: 6.35, brightness: 2.1}     // 参宿五 Bellatrix
+            ]
+        },
+        // 仙后座 - 拱极星座，福州全年可见
+        {
+            name: '仙后座',
+            stars: [
+                {ra: 0.15, dec: 59.15, brightness: 2.2},   // Caph β Cas
+                {ra: 0.41, dec: 56.54, brightness: 2.3},   // Schedar α Cas
+                {ra: 0.95, dec: 60.72, brightness: 2.5},   // γ Cas
+                {ra: 1.43, dec: 60.24, brightness: 2.7},   // δ Cas
+                {ra: 1.91, dec: 63.67, brightness: 3.4}    // ε Cas
+            ]
+        },
+        // 天鹅座 - 夏季星座，福州夏季可见
+        {
+            name: '天鹅座',
+            stars: [
+                {ra: 20.69, dec: 45.28, brightness: 1.3},  // 天津四 Deneb
+                {ra: 20.37, dec: 40.26, brightness: 2.5},  // Sadr γ Cyg
+                {ra: 19.51, dec: 27.96, brightness: 2.9},  // Albireo β Cyg
+                {ra: 19.75, dec: 33.97, brightness: 2.5},  // δ Cyg
+                {ra: 21.21, dec: 30.23, brightness: 2.5}   // ε Cyg
+            ]
+        },
+        // 天琴座 - 夏季星座，织女星
+        {
+            name: '天琴座',
+            stars: [
+                {ra: 18.62, dec: 38.78, brightness: 0.0},  // 织女星 Vega
+                {ra: 18.98, dec: 36.90, brightness: 4.3},  // ε Lyr
+                {ra: 18.75, dec: 39.61, brightness: 3.2},  // ζ Lyr
+                {ra: 18.90, dec: 43.95, brightness: 4.2},  // δ Lyr
+                {ra: 19.27, dec: 42.10, brightness: 5.0}   // β Lyr
+            ]
+        },
+        // 小熊座 - 包含北极星
+        {
+            name: '小熊座',
+            stars: [
+                {ra: 2.53, dec: 89.26, brightness: 2.0},   // 北极星 Polaris
+                {ra: 14.85, dec: 74.16, brightness: 2.1},  // Kochab β UMi
+                {ra: 15.73, dec: 71.83, brightness: 3.0},  // γ UMi
+                {ra: 16.29, dec: 75.76, brightness: 4.2},  // δ UMi
+                {ra: 17.54, dec: 86.59, brightness: 4.2}   // ε UMi
+            ]
+        }
+    ];
+
+    // 天文坐标转换函数
+    // 赤道坐标(RA, Dec) → 地平坐标(Az, Alt)
+    function equatorialToHorizontal(ra, dec, lst, lat) {
+        // 转换为弧度
+        const raRad = ra * 15 * Math.PI / 180; // RA是小时，转度再转弧度
+        const decRad = dec * Math.PI / 180;
+        const lstRad = lst * 15 * Math.PI / 180;
+        const latRad = lat * Math.PI / 180;
+
+        // 计算时角
+        const ha = lstRad - raRad;
+
+        // 计算高度角
+        const sinAlt = Math.sin(decRad) * Math.sin(latRad) +
+                       Math.cos(decRad) * Math.cos(latRad) * Math.cos(ha);
+        const alt = Math.asin(sinAlt);
+
+        // 计算方位角
+        const cosAz = (Math.sin(decRad) - Math.sin(alt) * Math.sin(latRad)) /
+                      (Math.cos(alt) * Math.cos(latRad));
+        let az = Math.acos(Math.max(-1, Math.min(1, cosAz)));
+
+        // 根据时角调整方位角
+        if (Math.sin(ha) > 0) {
+            az = 2 * Math.PI - az;
+        }
+
+        return { azimuth: az, altitude: alt };
+    }
+
+    // 地平坐标(Az, Alt) → 屏幕坐标(x, y)
+    // 使用正射投影（Orthographic projection）
+    function horizontalToScreen(az, alt) {
+        // 屏幕作为观察窗口，显示整个天空的一部分
+        // SKY_VIEW_SCALE 控制视野大小：10表示显示1/10天空，5表示显示1/5天空
+        const maxRadius = Math.max(canvas.width, canvas.height) * SKY_VIEW_SCALE * 0.5;
+
+        // 计算天顶距（从天顶到该点的角距离）
+        const zenithDistance = (Math.PI / 2 - alt);
+        const radius = zenithDistance / (Math.PI / 2) * maxRadius;
+
+        // 方位角：北=0度，东=90度，顺时针
+        // 屏幕坐标：上=北，右=东
+        const x = canvas.width / 2 + radius * Math.sin(az);
+        const y = canvas.height / 2 - radius * Math.cos(az);
+
+        return { x, y, altitude: alt * 180 / Math.PI };
+    }
+
+    // 生成真实星空背景星
+    function initRealStars() {
+        stars = [];
+
+        // 生成大量背景星（使用赤经赤纬坐标）
+        const numStars = 8000; // 大幅增加星星数量，让星空更密集
+
+        for (let i = 0; i < numStars; i++) {
+            // 随机赤经 0-24小时
+            const ra = Math.random() * 24;
+            // 随机赤纬，偏向北半球
+            const dec = Math.asin(Math.random() * 2 - 1) * 180 / Math.PI;
+            // 只保留赤纬 > -40度的星星（福州纬度26度，南天-40度以下基本看不到）
+            if (dec > -40) {
+                // 只有15%的星星是较大的亮星，85%是小星星
+                const isLargeStar = Math.random() < 0.15;
+
+                let radius, baseAlpha, brightness;
+
+                if (isLargeStar) {
+                    // 15%的亮星：较大，较亮
+                    brightness = 1 + Math.random() * 3; // 视星等1-4等
+                    radius = Math.max(1.0, Math.min(2.2, 2.8 - brightness * 0.4));
+                    baseAlpha = Math.max(0.4, Math.min(0.9, 1.0 - (brightness - 1) / 5));
+                } else {
+                    // 85%的暗星：很小，较暗
+                    brightness = 3.5 + Math.random() * 3.5; // 视星等3.5-7等
+                    radius = Math.max(0.2, Math.min(0.9, 1.5 - brightness * 0.15));
+                    baseAlpha = Math.max(0.1, Math.min(0.5, 0.7 - (brightness - 3.5) / 8));
+                }
+
+                // 为每颗星星分配5种不同的旋转速度档位，增加层次感
+                const speedLevels = [0.7, 0.85, 1.0, 1.15, 1.3]; // 5种速度：最慢、较慢、正常、较快、最快
+                const rotationSpeedMultiplier = speedLevels[Math.floor(Math.random() * 5)];
+
+                // 更多样的闪烁速度（有些快闪，有些慢闪）
+                const flickerSpeed = 0.0005 + Math.random() * 0.003;
+
+                stars.push({
+                    ra: ra,
+                    dec: dec,
+                    radius: radius,
+                    baseAlpha: baseAlpha,
+                    alpha: 0,
+                    flickerSpeed: flickerSpeed,
+                    flickerOffset: Math.random() * Math.PI * 2,
+                    rotationSpeedMultiplier: rotationSpeedMultiplier,
+                    isConstellation: false
+                });
+            }
+        }
+    }
+
+    // 初始化星座 - 使用真实天文坐标（RA/Dec）
+    function initConstellations(){
+        constellations = [];
+
+        // 随机选择4-6个星座显示
+        const numConstellations = 4 + Math.floor(Math.random() * 3);
+        const shuffled = [...constellationData].sort(() => Math.random() - 0.5);
+        const selectedConstellations = shuffled.slice(0, numConstellations);
+
+        selectedConstellations.forEach(constellation => {
+            const consStars = constellation.stars.map(s => {
+                // 直接使用真实的赤经赤纬坐标
+                // 根据亮度计算星星大小（视星等越小越亮，半径越大）
+                const radius = Math.max(1.2, 3.5 - s.brightness * 0.5);
+                const baseAlpha = Math.max(0.7, 1.2 - s.brightness * 0.15);
+
+                return {
+                    ra: s.ra,           // 赤经（小时）
+                    dec: s.dec,         // 赤纬（度）
+                    radius: radius,
+                    baseAlpha: Math.min(1, baseAlpha),
+                    alpha: 0.8,
+                    flickerSpeed: 0.0008 + Math.random() * 0.0012,
+                    flickerOffset: Math.random() * Math.PI * 2,
+                    isConstellation: true
+                };
+            });
+
+            constellations.push({
+                name: constellation.name,
+                stars: consStars
+            });
+        });
+    }
+
+    // 初始化
+    resize();
+
+    // 银河
+    for(let i=0;i<25;i++){
+        galaxyLayers.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height*0.8,
+            r:150+Math.random()*400,
+            opacity:0.015+Math.random()*0.03,
+            color:`rgba(${180+Math.random()*50}, ${180+Math.random()*70}, 255, 1)`,
+            floatSpeed:0.0001+Math.random()*0.0001,
+            floatOffset:Math.random()*Math.PI*2
+        });
+    }
+
+    // 流星
+    function createMeteor(){
+        if(meteors.length>6) return;
+        const side=Math.random(), z=0.4+Math.random()*0.6;
+        let speed=(4+Math.random()*4)*0.66; speed*= z<0.7?0.7:1;
+        let x,y,vx,vy;
+        const lengthMax=100,lengthBase=(30+Math.random()*70)*z,opacityBase=((0.8+Math.random()*0.4)*0.9)*z;
+        // 更多绚丽的颜色
+        const colorChoices=[
+            "#00d4ff", "#00ff9f", "#ff9f00", "#66ccff", "#00ffd5",
+            "#ff6b9d", "#c471ed", "#f7b731", "#5f27cd", "#00d2d3",
+            "#1dd1a1", "#feca57", "#ff9ff3", "#48dbfb", "#ee5a6f"
+        ];
+        const color=colorChoices[Math.floor(Math.random()*colorChoices.length)];
+        if(side<0.33){ x=-50; y=Math.random()*canvas.height*0.7; vx=speed; vy=speed*(0.2+Math.random()*0.5);}
+        else if(side<0.66){ x=Math.random()*canvas.width; y=-50; vx=(Math.random()-0.5)*speed*1.5; vy=speed*(0.5+Math.random()*0.5);}
+        else{ x=canvas.width+50; y=Math.random()*canvas.height*0.7; vx=-speed; vy=speed*(0.2+Math.random()*0.5);}
+        meteors.push({x,y,vx,vy,length:Math.min(lengthBase,lengthMax),opacity:opacityBase,fading:false,z,color,trail:[],scale:1.0});
+    }
+
+    // 极坐标转屏幕坐标（应用旋转）
+    function polarToScreen(angle, distance) {
+        const rotatedAngle = angle + skyRotation;
+        const x = polarisX + Math.cos(rotatedAngle) * distance;
+        const y = polarisY + Math.sin(rotatedAngle) * distance;
+        return { x, y };
+    }
+
+    // 绘制星座（使用真实天文坐标转换）
+    function drawConstellations(time){
+        constellations.forEach(cons => {
+            cons.stars.forEach(s => {
+                // 计算当前本地恒星时（基于旋转角度）
+                const currentLST = (skyRotation / (Math.PI * 2)) * 24;
+
+                // 转换赤道坐标到地平坐标
+                const horiz = equatorialToHorizontal(s.ra, s.dec, currentLST, LATITUDE);
+
+                // 只绘制地平线以上的星星
+                if (horiz.altitude > 0) {
+                    const pos = horizontalToScreen(horiz.azimuth, horiz.altitude);
+
+                    // 闪烁效果（星座星星闪烁更温和）
+                    s.alpha = s.baseAlpha + Math.sin(time * s.flickerSpeed + s.flickerOffset) * 0.15;
+                    s.alpha = Math.max(0.7, Math.min(1, s.alpha));
+
+                    // 星座的星更亮，有光晕
+                    const grad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, s.radius * 3);
+                    grad.addColorStop(0, `rgba(255, 255, 255, ${s.alpha})`);
+                    grad.addColorStop(0.4, `rgba(200, 230, 255, ${s.alpha * 0.6})`);
+                    grad.addColorStop(1, 'rgba(200, 230, 255, 0)');
+
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, s.radius * 3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // 核心亮点
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, s.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                    ctx.fill();
+                }
+            });
+        });
+    }
+
+    // 绘制普通星星（使用真实天文坐标转换）
+    function drawStars(time){
+        stars.forEach(s=>{
+            // 计算当前本地恒星时（基于旋转角度和每颗星星的速度倍率）
+            // 不同的星星有不同的旋转速度，产生层次感
+            const adjustedRotation = skyRotation * s.rotationSpeedMultiplier;
+            const currentLST = (adjustedRotation / (Math.PI * 2)) * 24; // 将旋转角度转换为小时
+
+            // 转换赤道坐标到地平坐标
+            const horiz = equatorialToHorizontal(s.ra, s.dec, currentLST, LATITUDE);
+
+            // 只绘制地平线以上的星星
+            if (horiz.altitude > 0) {
+                const pos = horizontalToScreen(horiz.azimuth, horiz.altitude);
+
+                // 闪烁效果 - 每颗星星有不同的闪烁频率
+                s.alpha = s.baseAlpha + Math.sin(time * s.flickerSpeed + s.flickerOffset) * 0.3;
+                s.alpha = Math.max(0.1, Math.min(1, s.alpha));
+
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+                ctx.fill();
+            }
+        });
+    }
+
+    function drawGalaxy(time){
+        ctx.save();
+        // 银河也跟随星空旋转
+        ctx.translate(polarisX, polarisY);
+        ctx.rotate(skyRotation);
+        ctx.translate(-polarisX, -polarisY);
+
+        galaxyLayers.forEach(g=>{
+            const grad=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,g.r);
+            grad.addColorStop(0, `${g.color.replace(", 1)", ", "+g.opacity*2+")")}`);
+            grad.addColorStop(0.5, `${g.color.replace(", 1)", ", "+g.opacity+")")}`);
+            grad.addColorStop(1,"rgba(0,0,0,0)");
+            ctx.fillStyle=grad;
+            ctx.beginPath();
+            ctx.arc(g.x,g.y,g.r,0,Math.PI*2);
+            ctx.fill();
+        });
+        ctx.restore();
+    }
+
+    function drawMeteors(){
+        for(let i=meteors.length-1;i>=0;i--){
+            let m=meteors[i];
+            let speed=Math.sqrt(m.vx*m.vx+m.vy*m.vy);
+            const r=parseInt(m.color.slice(1,3),16),g=parseInt(m.color.slice(3,5),16),b=parseInt(m.color.slice(5,7),16);
+
+            // 记录拖尾轨迹
+            m.trail.push({x: m.x, y: m.y, opacity: m.opacity});
+            if(m.trail.length > 15) m.trail.shift();
+
+            // 绘制拖尾 - 真实流星的渐隐效果（应用缩放）
+            for(let j=0; j<m.trail.length-1; j++){
+                const t1 = m.trail[j];
+                const t2 = m.trail[j+1];
+                const trailOpacity = (j / m.trail.length) * m.opacity * 0.6;
+                const trailWidth = (j / m.trail.length) * 3 * m.z * m.scale;
+
+                const grad = ctx.createLinearGradient(t1.x, t1.y, t2.x, t2.y);
+                grad.addColorStop(0, `rgba(${r},${g},${b},${trailOpacity * 0.3})`);
+                grad.addColorStop(1, `rgba(${r},${g},${b},${trailOpacity})`);
+
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = trailWidth;
+                ctx.beginPath();
+                ctx.moveTo(t1.x, t1.y);
+                ctx.lineTo(t2.x, t2.y);
+                ctx.stroke();
+            }
+
+            // 绘制主尾巴（应用缩放）
+            let tailX=m.x-(m.vx/speed)*m.length*m.scale, tailY=m.y-(m.vy/speed)*m.length*m.scale;
+            const grad=ctx.createLinearGradient(m.x,m.y,tailX,tailY);
+            grad.addColorStop(0, `rgba(${r},${g},${b},${m.opacity})`);
+            grad.addColorStop(0.5, `rgba(${r},${g},${b},${m.opacity * 0.5})`);
+            grad.addColorStop(1,`rgba(${r},${g},${b},0)`);
+            ctx.strokeStyle=grad;
+            ctx.lineWidth=3*m.z*m.scale;
+            ctx.beginPath();
+            ctx.moveTo(m.x,m.y);
+            ctx.lineTo(tailX,tailY);
+            ctx.stroke();
+
+            // 绘制发光的头部 - 参考移动版，更亮（应用缩放）
+            // 外层光晕
+            const glowGrad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, 8*m.z*m.scale);
+            glowGrad.addColorStop(0, `rgba(${r},${g},${b},${m.opacity * 0.8})`);
+            glowGrad.addColorStop(0.3, `rgba(${r},${g},${b},${m.opacity * 0.5})`);
+            glowGrad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, 8*m.z*m.scale, 0, Math.PI*2);
+            ctx.fill();
+
+            // 明亮的核心（应用缩放）
+            const coreGrad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, 3*m.z*m.scale);
+            coreGrad.addColorStop(0, `rgba(255,255,255,${m.opacity})`);
+            coreGrad.addColorStop(0.5, `rgba(${r},${g},${b},${m.opacity})`);
+            coreGrad.addColorStop(1, `rgba(${r},${g},${b},${m.opacity * 0.3})`);
+            ctx.fillStyle = coreGrad;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, 3*m.z*m.scale, 0, Math.PI*2);
+            ctx.fill();
+
+            m.x+=m.vx; m.y+=m.vy;
+            if(m.fading) {
+                m.opacity-=0.015; // 透明度逐渐降低
+                m.scale-=0.02; // 大小逐渐变小
+                if(m.scale<0) m.scale=0;
+            }
+            else if(Math.random()<0.002) m.fading=true;
+            if(m.opacity<=0||m.y>canvas.height+50) meteors.splice(i,1);
+        }
+    }
+
+    let lastTime = performance.now();
+
+    function animate(time=0){
+        // 更新星空旋转角度 - 60分钟旋转360度
+        const currentTime = performance.now();
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        skyRotation += rotationSpeed * deltaTime;
+        // 保持在0-2π范围内
+        if (skyRotation > Math.PI * 2) {
+            skyRotation -= Math.PI * 2;
+        }
+
+        ctx.fillStyle="rgba(0,0,20,0.4)";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        drawStars(time);
+        drawGalaxy(time);
+        drawConstellations(time); // 绘制星座
+        drawMeteors();
+        if(Math.random()<0.02) createMeteor();
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // 移动端流星效果
+    if(window.innerWidth <= 768) {
+        const mobileMeteors = document.querySelectorAll('.meteor');
+        const activeMeteors = [];
+        const colorChoices = ['#00d4ff', '#00ff9f', '#ff9f00', '#66ccff', '#00ffd5'];
+
+        function createMobileMeteor() {
+            if(activeMeteors.length >= 5) return;
+
+            // 找一个未激活的流星元素
+            let meteorEl = null;
+            for(let el of mobileMeteors) {
+                if(!activeMeteors.includes(el)) {
+                    meteorEl = el;
+                    break;
+                }
+            }
+            if(!meteorEl) return;
+
+            // 随机属性
+            const side = Math.random();
+            const color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
+            const size = 0.5 + Math.random() * 1.0; // 0.5-1.5倍大小
+            const tailLength = 40 + Math.random() * 60; // 40-100px尾巴长度
+            const headSize = 3 + Math.random() * 2; // 3-5px头部大小
+            const glowSize = 4 + Math.random() * 5; // 6-12px光晕大小
+            const duration = 8 + Math.random() * 5; // 8-13秒
+            const distance = 700 + Math.random() * 300; // 700-1000px移动距离
+
+            // 随机起始位置和角度（不从下往上，角度0-180度）
+            let top, left, angle;
+            if(side < 0.33) {
+                // 从左边进入
+                left = -10;
+                top = Math.random() * 60;
+                angle = 20 + Math.random() * 70; // 20-90度，向右下
+            } else if(side < 0.66) {
+                // 从上边进入
+                top = -10;
+                left = Math.random() * 100;
+                angle = 60 + Math.random() * 60; // 60-120度，向下
+            } else {
+                // 从右边进入
+                left = 110;
+                top = Math.random() * 60;
+                angle = 110 + Math.random() * 70; // 110-180度，向左下
+            }
+
+            // 设置样式
+            meteorEl.style.top = top + '%';
+            meteorEl.style.left = left + '%';
+            meteorEl.style.width = headSize + 'px';
+            meteorEl.style.height = headSize + 'px';
+            meteorEl.style.background = color;
+            meteorEl.style.boxShadow = `0 0 ${glowSize}px ${color}`;
+            meteorEl.style.transform = `rotate(${angle}deg) translateX(0) scale(${size})`;
+            meteorEl.style.animation = 'none';
+
+            // 设置尾巴渐变颜色和大小
+            const r = parseInt(color.slice(1,3), 16);
+            const g = parseInt(color.slice(3,5), 16);
+            const b = parseInt(color.slice(5,7), 16);
+            meteorEl.style.setProperty('--meteor-color-start', `rgba(${r}, ${g}, ${b}, 0)`);
+            meteorEl.style.setProperty('--meteor-color-end', `rgba(${r}, ${g}, ${b}, 0.8)`);
+            meteorEl.style.setProperty('--meteor-glow', `rgba(${r}, ${g}, ${b}, 0.6)`);
+            meteorEl.style.setProperty('--meteor-tail-length', tailLength + 'px');
+            meteorEl.style.setProperty('--meteor-head-size', headSize + 'px');
+            meteorEl.style.setProperty('--meteor-glow-size', glowSize + 'px');
+
+            // 使用Web Animations API实现动画（包含渐隐和缩小效果）
+            const animation = meteorEl.animate([
+                {
+                    opacity: 0,
+                    transform: `rotate(${angle}deg) translateX(0) scale(${size * 0.5})`
+                },
+                {
+                    opacity: 1,
+                    transform: `rotate(${angle}deg) translateX(${distance * 0.2}px) scale(${size})`,
+                    offset: 0.1
+                },
+                {
+                    opacity: 0.8,
+                    transform: `rotate(${angle}deg) translateX(${distance * 0.7}px) scale(${size * 0.7})`,
+                    offset: 0.7
+                },
+                {
+                    opacity: 0,
+                    transform: `rotate(${angle}deg) translateX(${distance}px) scale(${size * 0.2})`
+                }
+            ], {
+                duration: duration * 1000,
+                easing: 'ease-out'
+            });
+
+            activeMeteors.push(meteorEl);
+
+            animation.onfinish = () => {
+                const index = activeMeteors.indexOf(meteorEl);
+                if(index > -1) activeMeteors.splice(index, 1);
+            };
+        }
+
+        // 定期创建流星
+        setInterval(() => {
+            if(Math.random() < 0.6) { // 60%概率
+                createMobileMeteor();
+            }
+        }, 800);
+
+        // 初始创建一颗
+        setTimeout(createMobileMeteor, 500);
+    }
+</script>
+</body>
+</html>
