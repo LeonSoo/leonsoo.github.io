@@ -244,7 +244,7 @@
 
         .product-card {
             width: 100%;
-            aspect-ratio: 3 / 1;
+            aspect-ratio: 4 / 1;
             background: rgba(30,30,60,0.6);
             backdrop-filter: blur(10px);
             padding: 0 20px;
@@ -1025,6 +1025,19 @@
             .product-grid {
                 width: 100%;
                 max-width: none;
+                gap: 8px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .product-card {
+                padding: 0 8px;
+                font-size: 0.75em;
+                aspect-ratio: 3 / 1;
+            }
+
+            .product-card span {
+                white-space: normal;
+                word-break: break-word;
             }
 
             /* 不同卡片的边框颜色 */
@@ -1626,6 +1639,12 @@
             <div class="product-card"><span>opencode-util-db</span></div>
             <div class="product-card"><span>opencode-util-template</span></div>
             <div class="product-card"><span>opencode-util-email</span></div>
+
+            <div class="product-card"><span>opencode-util-sms</span></div>
+            <div class="product-card"><span>opencode-util-qrcode</span></div>
+            <div class="product-card"><span>opencode-util-qrcode</span></div>
+            <div class="product-card"><span>opencode-util-office</span></div>
+            <div class="product-card"><span>opencode-util-compress</span></div>
         </div>
     </div>
     <div id="down-btn2">▼ More</div>
