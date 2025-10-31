@@ -22,8 +22,7 @@
             height: 60px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
+            justify-content: center;
             z-index: 30;
             color: #e8e8e8;
             background: rgba(0, 0, 20, 0.8);
@@ -31,11 +30,16 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 212, 255, 0.2);
             border-bottom: 1px solid rgba(0, 212, 255, 0.3);
         }
+        .header-container {
+            width: 80%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         #logo {
             flex: 0 0 auto;
             font-weight: bold;
             font-size: 1.3em;
-            padding-left: 260px;
             background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -94,7 +98,6 @@
             flex: 0 0 auto;
             font-size: 1.0em;
             padding: 6px 16px;
-            margin-right: 330px;
             border-radius: 8px;
             background: rgba(0, 0, 20, 0.3);
             white-space: nowrap;
@@ -217,28 +220,44 @@
         /* 产品网格改为每行 6 个，换行 */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr); /* 每行6个 */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 10px;
-            width: 70%;
-            padding: 20px;
-            justify-items: center;
-            overflow: visible; /* 取消水平滚动 */
-            margin: 0 auto; /* 居中 */
+            width: 88%;
+            max-width: 1400px;
+            padding: 20px 0;
+            margin: 0 auto;
         }
+
+        @media screen and (min-width: 769px) and (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 950px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 10px;
+            }
+        }
+
         .product-card {
-            width: 186px; /* 固定宽度，文字不换行 */
-            background: rgba(30,30,60,0.8);
+            width: 100%;
+            aspect-ratio: 3 / 1;
+            background: rgba(30,30,60,0.6);
             backdrop-filter: blur(10px);
-            padding: 18px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 186, 255, 0.2);
-            text-align: center;
-            white-space: nowrap;
+            padding: 0 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 8px rgba(0, 186, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: transform 0.4s, box-shadow 0.4s, border 0.4s;
-            position: relative;
-            border: 2px solid transparent;
+            border: 1px solid transparent;
             background-clip: padding-box;
             overflow: hidden;
+            box-sizing: border-box;
         }
 
         /* 产品卡片光效 */
@@ -285,13 +304,14 @@
         }
 
         .product-card:hover {
-            transform: translateY(-8px) scale(1.08);
-            box-shadow:0 8px 40px rgba(0, 186, 255, 0.6), 0 0 30px rgba(0, 255, 159, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 186, 255, 0.4), 0 0 16px rgba(0, 255, 159, 0.3);
         }
 
         /* 产品卡片文字颜色 */
         .product-card {
             color: #f5f5f5;
+            font-size: 0.9em;
         }
 
         .product-card span {
@@ -303,11 +323,13 @@
             z-index: 1;
             font-weight: 500;
             letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .about {
-            padding-right: 300px;
-            padding-left: 300px;
+            width: 80%;
+            margin: 0 auto;
             text-align: left;
             line-height: 2;
             color: #d5d5d5;
@@ -329,30 +351,48 @@
             border-bottom: 1px solid #00ff9f;
             text-shadow: 0 0 8px rgba(0, 255, 159, 0.5);
         }
-        /* 标题渐变效果 */
+        /* 文字变色效果 */
         .screen h1, .screen h2 {
-            background: linear-gradient(135deg, #00d4ff 0%, #00ff9f 50%, #ff9f00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             font-size: 2.5em;
             font-weight: bold;
             margin: 20px 0;
-            animation: titleGlow 3s ease-in-out infinite;
+            display: inline-block;
+            position: relative;
+            background: linear-gradient(
+                90deg,
+                #00d4ff 0%,
+                #00ff9f 25%,
+                #ff9f00 50%,
+                #00ff9f 75%,
+                #00d4ff 100%
+            );
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: colorShift 4s ease-in-out infinite;
         }
 
-        /* 呼吸发光动画 - 更柔和 */
-        @keyframes titleGlow {
-            0%, 100% {
-                filter: brightness(1) drop-shadow(0 0 20px rgba(0, 212, 255, 0.4));
+        /* 颜色渐变流动效果 */
+        @keyframes colorShift {
+            0% {
+                background-position: 0% 50%;
             }
             50% {
-                filter: brightness(1.2) drop-shadow(0 0 40px rgba(0, 255, 159, 0.6));
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
             }
         }
 
         /* 桌面版装饰元素 - 浮动光点 */
         @media screen and (min-width: 769px) {
+            /* 桌面版隐藏mobile-section容器，让内容直接布局 */
+            .mobile-section {
+                display: contents;
+            }
+
             .screen::before {
                 content: '';
                 position: absolute;
@@ -457,17 +497,27 @@
             position: fixed;
             top: 0;
             right: -100%;
-            width: 70%;
-            max-width: 300px;
+            width: 75%;
+            max-width: 320px;
             height: 100%;
-            background: rgba(15, 14, 23, 0.95);
-            backdrop-filter: blur(20px);
+            background: linear-gradient(135deg, rgba(10, 15, 30, 0.98) 0%, rgba(5, 10, 25, 0.98) 100%);
+            backdrop-filter: blur(30px);
             z-index: 25;
-            transition: right 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-            border-left: 1px solid rgba(0, 212, 255, 0.2);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.8), -2px 0 10px rgba(0, 212, 255, 0.1);
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
             display: none;
             box-sizing: border-box;
+        }
+        #mobile-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+            pointer-events: none;
         }
         #mobile-menu.active {
             right: 0;
@@ -481,41 +531,65 @@
         }
         #mobile-menu a {
             display: block;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            padding: 25px 35px;
-            font-size: 1.3em;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            padding: 22px 30px;
+            font-size: 1.2em;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        #mobile-menu a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #00d4ff, #00ff9f);
+            transform: translateX(-3px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #mobile-menu a:hover::before {
+            transform: translateX(0);
         }
         #mobile-menu a:hover {
-            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), transparent);
-            padding-left: 45px;
-            color: #00d4ff;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.12) 0%, rgba(0, 212, 255, 0.02) 100%);
+            padding-left: 40px;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+            border-bottom-color: rgba(0, 212, 255, 0.2);
         }
 
         /* 侧边栏语言切换 */
         #mobile-lang-switch {
-            padding: 25px 35px;
-            font-size: 1.3em;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 600;
-            background: rgba(0, 212, 255, 0.05);
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 20px 30px;
+            margin: 15px 15px 20px 15px;
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(0, 255, 159, 0.05) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             flex-shrink: 0;
-            width: 100%;
             box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         #mobile-lang-switch:hover {
-            background: rgba(30, 30, 50, 0.7);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 255, 159, 0.1) 100%);
+            border-color: rgba(0, 255, 159, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
         #mobile-lang-switch:active {
-            background: rgba(30, 30, 50, 0.9);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 255, 159, 0.15) 100%);
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         /* 遮罩层 */
@@ -526,10 +600,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: radial-gradient(circle at right, rgba(0, 20, 40, 0.8) 0%, rgba(0, 0, 0, 0.75) 100%);
+            backdrop-filter: blur(3px);
             z-index: 20;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #menu-overlay.active {
             opacity: 1;
@@ -565,7 +640,7 @@
                     #0a3a3a 100%);
             }
 
-            /* 网格装饰 */
+            /* 网格装饰 - 已移除，保持纯净星空背景 */
             .mobile-bg::before {
                 content: '';
                 position: absolute;
@@ -573,11 +648,8 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-image:
-                    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-                background-size: 50px 50px;
-                opacity: 0.8;
+                /* 移除网格效果 */
+                opacity: 0;
             }
 
             /* 霓虹发光装饰 */
@@ -611,18 +683,9 @@
                 }
             }
 
-            /* 扫描线动画效果 */
+            /* 扫描线动画效果 - 已移除 */
             .mobile-bg {
                 overflow: hidden;
-            }
-
-            .mobile-bg::before {
-                animation: gridFloat 20s linear infinite;
-            }
-
-            @keyframes gridFloat {
-                0% { transform: translateY(0); }
-                100% { transform: translateY(50px); }
             }
 
             /* 数字粒子效果 - 使用伪元素 */
@@ -655,6 +718,73 @@
             @keyframes particleFloat {
                 0% { transform: translateY(0); }
                 100% { transform: translateY(50%); }
+            }
+
+            /* H5星座效果 - 性能优化版 */
+            .mobile-constellation {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 10;
+                display: none;
+            }
+
+            @media screen and (max-width: 768px) {
+                .mobile-constellation {
+                    display: block;
+                }
+            }
+
+            .constellation-star {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(0, 212, 255, 0.4) 100%);
+                border-radius: 50%;
+                box-shadow:
+                    0 0 6px rgba(255, 255, 255, 0.7),
+                    0 0 12px rgba(0, 212, 255, 0.4);
+                animation: starTwinkle 3s ease-in-out infinite;
+                will-change: opacity, transform;
+            }
+
+            .constellation-star.bright {
+                width: 5px;
+                height: 5px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(0, 212, 255, 0.4) 100%);
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 0.7),
+                    0 0 14px rgba(0, 212, 255, 0.4);
+            }
+
+            /* 背景装饰星星 */
+            .bg-star {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+                animation: bgStarTwinkle 4s ease-in-out infinite;
+            }
+
+            @keyframes starTwinkle {
+                0%, 100% {
+                    opacity: 0.7;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.15);
+                }
+            }
+
+            @keyframes bgStarTwinkle {
+                0%, 100% { opacity: 0.3; }
+                50% { opacity: 0.7; }
             }
 
             /* 流星效果 - 仅移动端，参考桌面版实现 */
@@ -744,6 +874,12 @@
                 z-index: 100;
                 border-bottom: 1px solid rgba(0, 212, 255, 0.2);
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .header-container {
+                width: 100%;
+                max-width: none;
+                padding: 0;
             }
 
             /* 页头底部发光线条 */
@@ -1112,7 +1248,7 @@
             .product-card span {
                 position: relative;
                 color: rgba(255, 255, 255, 0.9);
-                font-size: 0.95em;
+                font-size: 0.85em;
                 font-weight: 600;
                 text-align: center;
                 line-height: 1.6;
@@ -1316,7 +1452,7 @@
             }
 
             .product-card span {
-                font-size: 0.82em;
+                font-size: 0.72em;
                 line-height: 1.5;
             }
 
@@ -1346,6 +1482,9 @@
 <!-- 移动端科技感背景 -->
 <div class="mobile-bg"></div>
 
+<!-- H5星座效果 - 每次刷新随机显示 -->
+<div class="mobile-constellation" id="mobileConstellation"></div>
+
 <!-- 流星效果 - 仅移动端 -->
 <div class="meteor"></div>
 <div class="meteor"></div>
@@ -1356,31 +1495,33 @@
 
 <!-- 页头 -->
 <div id="header">
-    <div id="logo">Leon</div>
-    <div id="menu">
-        <a id="menu-about">
-            <span class="zh">简介</span>
-            <span class="en" style="display:none;">Introduction</span>
-        </a>
-        <a id="menu-products">
-            <span class="zh">项目</span>
-            <span class="en" style="display:none;">Products</span>
-        </a>
-        <a id="menu-contact">
-            <span class="zh">关于</span>
-            <span class="en" style="display:none;">About</span>
-        </a>
-        <a href="https://www.opencode.cloud" target="_blank">
-            <span class="zh">开源库</span>
-            <span class="en" style="display:none;">OpenCode</span>
-        </a>
-    </div>
-    <div class="header-right">
-        <div id="lang-switch">🇨🇳 | 🇺🇸</div>
-        <div id="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
+    <div class="header-container">
+        <div id="logo">Leon</div>
+        <div id="menu">
+            <a id="menu-about">
+                <span class="zh">简介</span>
+                <span class="en" style="display:none;">Introduction</span>
+            </a>
+            <a id="menu-products">
+                <span class="zh">项目</span>
+                <span class="en" style="display:none;">Products</span>
+            </a>
+            <a id="menu-contact">
+                <span class="zh">关于</span>
+                <span class="en" style="display:none;">About</span>
+            </a>
+            <a href="https://www.opencode.cloud" target="_blank">
+                <span class="zh">开源库</span>
+                <span class="en" style="display:none;">OpenCode</span>
+            </a>
+        </div>
+        <div class="header-right">
+            <div id="lang-switch">🇨🇳 | 🇺🇸</div>
+            <div id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </div>
 </div>
@@ -1419,11 +1560,18 @@
     <div class="mobile-section">
         <h1 class="zh">简介</h1>
         <h1 class="en" style="display:none;">Introduction</h1>
-        <p class="zh about">我是 Leon Soo，一名"数字代码生产者"，专注于将创意通过代码转化为可落地的数字产品。<br/><br/>常用 Java 与 Vue 进行全栈开发，能独立构建项目，也能高效协同团队推进开发，擅长云原生项目部署，并具备原生应用开发能力。热爱探索新技术与数码产品，喜欢通过电影体验不同的世界，也享受与爱的人共度的时光。<br/><br/>我的原则是专注，无论是生活还是项目，都应追求卓越与创新。</p>
+        <p class="zh about">
+            我是 Leon Soo，一名数字产品生产者，致力于将想法和创意转化为可用的数字产品。<br/>
+            近些年主要使用 Java 与 Vue 进行 Web 云原生产品开发、测试和部署。拥有十余年的团队管理与项目推进经验，带领伙伴们高效协作，推动大型项目顺利落地是一件让我充满成就感的事。<br/>
+            我常常听着有声书上下班，喜欢探索新技术与数码产品，也喜欢通过电影体验不同人物的经历，更享受与身边爱的人共度闲暇时光。<br/>
+            我的原则是专注：无论是生活还是项目，都应追求卓越与创新。
+        </p>
         <p class="en about" style="display:none;">
-            I'm Leon Soo, a digital code creator dedicated to transforming ideas into tangible digital products through code.<br/><br/>
-            I primarily work with Java and Vue for full-stack development, capable of building projects independently as well as collaborating efficiently within teams. I specialize in cloud-native deployment and also have experience in native app development. I'm passionate about exploring new technologies and digital tools, enjoy discovering different worlds through films, and value the moments spent with loved ones.<br/><br/>
-            My guiding principle is focus — whether in life or in projects, I believe in pursuing excellence and innovation in everything I do.
+            I’m Leon Soo, a digital product creator dedicated to turning ideas and creativity into practical digital experiences.<br/>
+            In recent years, I’ve mainly worked with Java and Vue to develop, test, and deploy cloud-native web products.
+            With over a decade of team leadership experience, I take great satisfaction in guiding teams to collaborate efficiently and deliver large-scale projects successfully.<br/>
+            I often listen to audiobooks during my commute, enjoy exploring new technologies and digital gadgets, and love experiencing different lives through films — but most of all, I cherish spending my free time with the people I love.<br/>
+            My guiding principle is focus: whether in life or in projects, I strive for excellence and innovation.
         </p>
     </div>
     <div id="down-btn">▼ More</div>
@@ -1433,14 +1581,31 @@
     <div class="mobile-section">
         <h2 class="zh">主要项目</h2>
         <h2 class="en" style="display:none;">Main Projects</h2>
-        <p class="zh about">OpenCode（opencode.cloud）是我独立维护的一个开源项目，它的前身是 Facecto.com。由于工作繁忙，早期项目一度停止维护，但我始终坚信：开源的意义不止于代码共享，更在于知识的流动与思想的交流。<br/><br/>
-        OpenCode 的愿景是让更多开发者能够以更开放的方式去构建、去学习、去创造。技术的价值，在于连接与启发，而非界限与隔阂。我们所做的一切，都是希望通过开源的力量，让创造力回归最纯粹的本质 —— 自由、协作与创新。<br/><br/>
-        目前我主要维护的是 OpenCode Util 系列 —— 一组面向开发者的轻量级开源工具库，旨在提升代码的可复用性与工程效率。它不仅是我在日常开发中的积累与沉淀，也是希望为社区提供一些可借鉴、可扩展的基础组件。<br/><br/>
-        未来，OpenCode 将继续围绕"简洁、稳定、开放"的理念，推出更多实用的工具与框架，让开发的过程更纯粹、更有乐趣。</p>
-        <p class="en about" style="display:none;">OpenCode (opencode.cloud) is an open-source project I maintain independently. It originated from Facecto.com, an earlier project that was discontinued due to a busy work schedule. Yet, I've always believed that the essence of open source lies not only in sharing code, but in enabling the flow of knowledge and the exchange of ideas.<br/><br/>
-        The vision of OpenCode is to empower developers to build, learn, and create in a more open way. The true value of technology lies in connection and inspiration, not in boundaries or separation. Everything we do is driven by one belief: that open source brings creativity back to its purest form — freedom, collaboration, and innovation.<br/><br/>
-        Currently, I'm maintaining the OpenCode Util series — a collection of lightweight open-source utility libraries designed to enhance code reusability and engineering efficiency. It represents both my personal development experience and a contribution to the community, offering practical and extensible components for developers.<br/><br/>
-        In the future, OpenCode will continue to embrace the principles of simplicity, stability, and openness, delivering more useful tools and frameworks that make development cleaner, more enjoyable, and truly creative.</p>
+        <p class="zh about">
+            OpenCode（opencode.cloud） 是我独立维护的一个开源项目，前身为 Facecto.com —— 一个专注于技术知识分享与开源组件研发的个人博客（因工作繁忙而暂停维护）。<br/>
+
+            我始终相信，技术的价值在于连接与启发，让人们享受更高效、更便利的生活。<br/>
+            OpenCode 的愿景，是让更多开发者能够以更开放的方式去构建、去学习、去创造。
+            我们所做的一切，都是希望借助开源的力量，让创造力回归最纯粹的本质——自由、协作与创新。<br/>
+
+            目前，我主要维护 OpenCode Util 系列 —— 一组面向开发者的轻量级开源工具库，旨在提升代码的复用性与工程效率。
+            它既是我在日常开发中的经验积累，也是我希望为社区贡献的一份力量——提供可借鉴、可扩展的基础组件。<br/>
+
+            未来，OpenCode 将继续秉持 “简洁、稳定、开放” 的理念，推出更多实用的工具与框架，让开发过程更加纯粹，也更具乐趣。<br/>
+        </p>
+        <p class="en about" style="display:none;">
+            OpenCode (opencode.cloud) is an open-source project that I independently maintain.
+            It originated from Facecto.com — a personal blog focused on technical knowledge sharing and open-source component development (which was later paused due to a busy work schedule).<br/>
+
+            I firmly believe that the true value of technology lies in connection and inspiration — enabling people to live and work more efficiently and conveniently.<br/>
+            The vision of OpenCode is to empower more developers to build, learn, and create in an open and collaborative way.
+            Everything we do is driven by the belief that open source can bring creativity back to its purest essence — freedom, collaboration, and innovation.<br/>
+
+            Currently, I primarily maintain the OpenCode Util series — a collection of lightweight, developer-oriented open-source libraries designed to enhance code reusability and engineering efficiency.
+            It represents both my personal accumulation of development experience and a contribution to the community — providing modular, extensible components that others can learn from and build upon.<br/>
+
+            Looking ahead, OpenCode will continue to uphold the principles of simplicity, stability, and openness, delivering more practical tools and frameworks that make the development process cleaner, purer, and more enjoyable.
+        </p>
 
         <div class="product-grid">
             <div class="product-card"><span>opencode-util-core</span></div>
@@ -1468,13 +1633,15 @@
     <div class="mobile-section">
         <h2 class="zh">关于</h2>
         <h2 class="en" style="display:none;">About</h2>
-        <p class="zh about">我的英文全名是 Jon Leon Soo（苏姓）。在早期开发开源组件和维护 Facecto 网站时，我常使用简称 Jon。不过，由于这个名字太常见了，现在我更喜欢别人叫我 Leon。当然，如果你愿意，也可以叫我 Jon。<br/><br/>
-        希望我开源的代码能对你有所帮助。欢迎访问我的 GitHub：<a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a><br/><br/>
-        我的邮箱：<a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a><br/>
+        <p class="zh about">
+            我姓苏，字洛明（Leon Soo）。“洛明”源自中华传统文化，并非身份证上的名字。Leon 是我的英文名，源自希腊语 “λέων（léon）”，意为“狮子”，象征勇敢与坚定，也体现了我在技术与人生道路上始终秉持的态度；Soo 对应中文姓“苏”（Su），便于在国际环境中使用。大学主修计算机科学，毕业以来，我一直投身于软件开发领域。十余年过去，我对编程的热情始终如初，对技术的追求从未止步。对我而言，代码不仅是创意落地的工具，更是思维的延展。持续学习、勇于创新、追求卓越，是我职业生涯始终不变的信条。<br/>
+            Github：<a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a>
+            邮箱：<a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a>
         网站：<a href="https://www.leonsoo.com" target="_blank" style="color:#5ec9ff;">www.leonsoo.com</a></p>
-        <p class="en about" style="display:none;">My full English name is Jon Leon Soo. During the early days of developing open-source components and maintaining the Facecto website, I often went by Jon. However, since that name is quite common, I now prefer to be called Leon. Of course, you can still call me Jon.<br/><br/>
-        I hope my open-source projects can be helpful to you. Feel free to visit my GitHub: <a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a><br/><br/>
-        Email: <a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a><br/>
+        <p class="en about" style="display:none;">
+            My name is Leon Soo (苏洛明). The courtesy name “洛明” is inspired by the essence of traditional Chinese culture and is not part of my official ID. Leon, my English name, comes from the Greek “λέων (léon),” meaning “lion,” symbolizing courage and determination—qualities I uphold in both technology and life. Soo corresponds to my Chinese surname “苏” (Su), making it convenient for international contexts. I majored in Computer Science and, since graduation, have been fully devoted to the field of software development. Over the past decade, my passion for coding has remained undiminished, and my pursuit of technical excellence continues unabated. To me, code is not only a tool for bringing ideas to life but also an extension of thought. Continuous learning, innovation, and striving for excellence define my professional journey.<br/>
+            Github:<a href="https://github.com/leonsoo" target="_blank" style="color:#5ec9ff;">https://github.com/leonsoo</a>
+        Email: <a href="mailto:leon@leonsoo.com" style="color:#5ec9ff;">leon@leonsoo.com</a>
         Website: <a href="https://www.leonsoo.com" target="_blank" style="color:#5ec9ff;">www.leonsoo.com</a></p>
     </div>
     <div id="up-btn">▲ Top</div>
@@ -1929,38 +2096,52 @@
     // 绘制星座（使用真实天文坐标转换）
     function drawConstellations(time){
         constellations.forEach(cons => {
+            // 先计算所有星星的屏幕坐标
+            const currentLST = (skyRotation / (Math.PI * 2)) * 24;
+            const positions = [];
+
             cons.stars.forEach(s => {
-                // 计算当前本地恒星时（基于旋转角度）
-                const currentLST = (skyRotation / (Math.PI * 2)) * 24;
-
-                // 转换赤道坐标到地平坐标
                 const horiz = equatorialToHorizontal(s.ra, s.dec, currentLST, LATITUDE);
-
-                // 只绘制地平线以上的星星
                 if (horiz.altitude > 0) {
                     const pos = horizontalToScreen(horiz.azimuth, horiz.altitude);
-
-                    // 闪烁效果（星座星星闪烁更温和）
-                    s.alpha = s.baseAlpha + Math.sin(time * s.flickerSpeed + s.flickerOffset) * 0.15;
-                    s.alpha = Math.max(0.7, Math.min(1, s.alpha));
-
-                    // 星座的星更亮，有光晕
-                    const grad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, s.radius * 3);
-                    grad.addColorStop(0, `rgba(255, 255, 255, ${s.alpha})`);
-                    grad.addColorStop(0.4, `rgba(200, 230, 255, ${s.alpha * 0.6})`);
-                    grad.addColorStop(1, 'rgba(200, 230, 255, 0)');
-
-                    ctx.fillStyle = grad;
-                    ctx.beginPath();
-                    ctx.arc(pos.x, pos.y, s.radius * 3, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // 核心亮点
-                    ctx.beginPath();
-                    ctx.arc(pos.x, pos.y, s.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
-                    ctx.fill();
+                    positions.push({x: pos.x, y: pos.y, star: s});
                 }
+            });
+
+            // 绘制连线（淡色细线，微微可见）
+            if (positions.length > 1) {
+                ctx.strokeStyle = 'rgba(150, 200, 255, 0.18)'; // 淡青蓝色，稍微增加可见度
+                ctx.lineWidth = 1; // 1px细线
+                ctx.beginPath();
+                ctx.moveTo(positions[0].x, positions[0].y);
+                for (let i = 1; i < positions.length; i++) {
+                    ctx.lineTo(positions[i].x, positions[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // 绘制星星
+            positions.forEach(({x, y, star: s}) => {
+                // 闪烁效果（星座星星闪烁更温和）
+                s.alpha = s.baseAlpha + Math.sin(time * s.flickerSpeed + s.flickerOffset) * 0.15;
+                s.alpha = Math.max(0.7, Math.min(1, s.alpha));
+
+                // 星座的星更亮，有光晕
+                const grad = ctx.createRadialGradient(x, y, 0, x, y, s.radius * 3);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${s.alpha})`);
+                grad.addColorStop(0.4, `rgba(200, 230, 255, ${s.alpha * 0.6})`);
+                grad.addColorStop(1, 'rgba(200, 230, 255, 0)');
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(x, y, s.radius * 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 核心亮点
+                ctx.beginPath();
+                ctx.arc(x, y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                ctx.fill();
             });
         });
     }
@@ -2133,10 +2314,10 @@
             // 随机属性
             const side = Math.random();
             const color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
-            const size = 0.5 + Math.random() * 1.0; // 0.5-1.5倍大小
+            const size = 0.5 + Math.random() * 0.8; // 0.5-1.3倍大小
             const tailLength = 40 + Math.random() * 60; // 40-100px尾巴长度
-            const headSize = 3 + Math.random() * 2; // 3-5px头部大小
-            const glowSize = 4 + Math.random() * 5; // 6-12px光晕大小
+            const headSize = 2 + Math.random() * 1.5; // 2-3.5px头部大小（减小）
+            const glowSize = 4 + Math.random() * 4; // 4-8px光晕大小（减小）
             const duration = 8 + Math.random() * 5; // 8-13秒
             const distance = 700 + Math.random() * 300; // 700-1000px移动距离
 
@@ -2213,15 +2394,118 @@
             };
         }
 
-        // 定期创建流星
-        setInterval(() => {
-            if(Math.random() < 0.6) { // 60%概率
-                createMobileMeteor();
-            }
-        }, 800);
+        // 随机间隔创建流星，避免扎堆
+        function scheduleMeteor() {
+            // 随机间隔1-4秒
+            const randomDelay = 1000 + Math.random() * 3000;
+            setTimeout(() => {
+                if(Math.random() < 0.7) { // 70%概率创建
+                    createMobileMeteor();
+                }
+                scheduleMeteor(); // 递归调度下一颗
+            }, randomDelay);
+        }
 
-        // 初始创建一颗
-        setTimeout(createMobileMeteor, 500);
+        // 初始创建一颗后开始随机调度
+        setTimeout(() => {
+            createMobileMeteor();
+            scheduleMeteor();
+        }, 800);
+    }
+
+    // H5星座效果 - 每次刷新随机显示不同星座
+    if(window.innerWidth <= 768) {
+        const constellations = [
+            // 北斗七星 - 靠中下
+            {
+                name: 'BigDipper',
+                stars: [
+                    {x: 25, y: 45, bright: true},
+                    {x: 30, y: 50, bright: false},
+                    {x: 38, y: 52, bright: false},
+                    {x: 45, y: 50, bright: false},
+                    {x: 55, y: 52, bright: true},
+                    {x: 62, y: 54, bright: false},
+                    {x: 70, y: 60, bright: false}
+                ]
+            },
+            // 猎户座（简化版）- 靠中间
+            {
+                name: 'Orion',
+                stars: [
+                    {x: 30, y: 42, bright: true},  // 参宿四
+                    {x: 60, y: 48, bright: true},  // 参宿七
+                    {x: 40, y: 58, bright: false}, // 参宿一
+                    {x: 45, y: 60, bright: false}, // 参宿二
+                    {x: 50, y: 60, bright: false}, // 参宿三
+                    {x: 55, y: 52, bright: false}
+                ]
+            },
+            // 仙后座（W形）- 靠中上
+            {
+                name: 'Cassiopeia',
+                stars: [
+                    {x: 20, y: 50, bright: false},
+                    {x: 32, y: 42, bright: true},
+                    {x: 45, y: 48, bright: false},
+                    {x: 58, y: 44, bright: false},
+                    {x: 70, y: 52, bright: true}
+                ]
+            },
+            // 天琴座（简化版）- 靠中间
+            {
+                name: 'Lyra',
+                stars: [
+                    {x: 45, y: 48, bright: true},  // 织女星
+                    {x: 40, y: 56, bright: false},
+                    {x: 50, y: 56, bright: false},
+                    {x: 38, y: 62, bright: false},
+                    {x: 52, y: 62, bright: false}
+                ]
+            },
+            // 天鹅座（十字架形）- 靠中下
+            {
+                name: 'Cygnus',
+                stars: [
+                    {x: 45, y: 40, bright: true},  // 天津四
+                    {x: 45, y: 52, bright: false},
+                    {x: 45, y: 65, bright: false},
+                    {x: 30, y: 52, bright: false},
+                    {x: 60, y: 52, bright: false}
+                ]
+            }
+        ];
+
+        // 随机选择一个星座
+        const selectedConstellation = constellations[Math.floor(Math.random() * constellations.length)];
+        const container = document.getElementById('mobileConstellation');
+
+        if(container) {
+            // 生成星座星星
+            selectedConstellation.stars.forEach((star, index) => {
+                const starEl = document.createElement('div');
+                starEl.className = 'constellation-star' + (star.bright ? ' bright' : '');
+                starEl.style.left = star.x + '%';
+                starEl.style.top = star.y + '%';
+                // 错开动画时间，让闪烁更自然
+                starEl.style.animationDelay = (index * 0.3) + 's';
+                starEl.style.animationDuration = (2.5 + Math.random() * 1.5) + 's';
+                container.appendChild(starEl);
+            });
+
+            // 添加随机背景星星（30-40颗）
+            const bgStarCount = 30 + Math.floor(Math.random() * 10);
+            for(let i = 0; i < bgStarCount; i++) {
+                const bgStar = document.createElement('div');
+                bgStar.className = 'bg-star';
+                // 随机分布在整个屏幕
+                bgStar.style.left = (Math.random() * 100) + '%';
+                bgStar.style.top = (Math.random() * 100) + '%';
+                bgStar.style.animationDelay = (Math.random() * 4) + 's';
+                bgStar.style.animationDuration = (3 + Math.random() * 2) + 's';
+                container.appendChild(bgStar);
+            }
+        }
     }
 </script>
 </body>
