@@ -1033,11 +1033,49 @@
                 padding: 0 8px;
                 font-size: 0.75em;
                 aspect-ratio: 3 / 1;
+                border-width: 2px;
             }
 
             .product-card span {
                 white-space: normal;
                 word-break: break-word;
+            }
+
+            .product-card:nth-child(6n+1) span {
+                background: linear-gradient(135deg, #00d4ff, #00ff9f);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6n+2) span {
+                background: linear-gradient(135deg, #00ff9f, #00d2d3);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6n+3) span {
+                background: linear-gradient(135deg, #ff9f00, #feca57);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6n+4) span {
+                background: linear-gradient(135deg, #c471ed, #ff6b9d);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6n+5) span {
+                background: linear-gradient(135deg, #48dbfb, #5f27cd);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .product-card:nth-child(6n+6) span {
+                background: linear-gradient(135deg, #1dd1a1, #f7b731);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
             /* 不同卡片的边框颜色 */
@@ -1639,9 +1677,7 @@
             <div class="product-card"><span>opencode-util-db</span></div>
             <div class="product-card"><span>opencode-util-template</span></div>
             <div class="product-card"><span>opencode-util-email</span></div>
-
             <div class="product-card"><span>opencode-util-sms</span></div>
-            <div class="product-card"><span>opencode-util-qrcode</span></div>
             <div class="product-card"><span>opencode-util-qrcode</span></div>
             <div class="product-card"><span>opencode-util-office</span></div>
             <div class="product-card"><span>opencode-util-compress</span></div>
